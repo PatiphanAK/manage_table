@@ -27,22 +27,29 @@ const TableCard2: React.FC<TableCardProps> = ({
 
   return (
     <>
-      <div className="card bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 text-amber-900 w-72">
-        <div className="card-body p-4">
+      <div
+        className={`card ${
+          timeLeft < 15
+            ? "bg-[#ff645f] hover:bg-red-200 active:bg-red-200"
+            : "bg-[#5071d4] hover:bg-blue-300 active:bg-blue-300"
+        } text-white w-64 p-4 rounded-lg shadow-lg`}
+      >
+        <div className="card-body items-center text-center">
           <h2 className="card-title text-lg">หมายเลขโต๊ะ {tableNum}</h2>
           <p className="text-sm">เวลาเปิดเตา: {startTime.format("HH:mm:ss")}</p>
-          <p className="text-sm">เวลาปิดเตา: {endTime.format("HH:mm:ss")}</p>
-          <p className="text-sm">เวลาที่เหลือ: {timeLeft} นาที</p>
+          <p className="text-sm ">เวลาปิดเตา: {endTime.format("HH:mm:ss")}</p>
+          <p className="text-sm text-[#b20808]">เวลาที่เหลือ: {timeLeft} นาที</p>
           {isTimeOver ? (
-            <p className="text-red-500 text-sm">
+            <p className="text-[#b41111] text-sm">
               เวลาปิดเตาเกินไปแล้ว {durationOver}
             </p>
           ) : (
-            <p className="text-red-500 text-sm">
-              เวลาเหลือ: {Math.floor(timeLeft / 60)} ชั่วโมง {timeLeft % 60} นาที
+            <p className="text-[#b41111] text-sm">
+              เวลาเหลือ: {Math.floor(timeLeft / 60)} ชั่วโมง {timeLeft % 60}{" "}
+              นาที
             </p>
           )}
-          <div className="card-actions justify-end mt-2">
+          <div className="card-actions justify-end">
             <button
               className="btn btn-sm bg-ghost"
               onClick={() => setAddTimeModalOpen(true)}
@@ -50,7 +57,7 @@ const TableCard2: React.FC<TableCardProps> = ({
               เพิ่มเวลา
             </button>
             <button
-              className="btn btn-sm btn-ghost"
+              className="btn btn-sm btn-white"
               onClick={() => setDeleteModalOpen(true)}
             >
               ปิดโต๊ะ
@@ -76,9 +83,10 @@ const TableCard2: React.FC<TableCardProps> = ({
                 className="btn btn-secondary btn-sm mr-2"
                 onClick={() => {
                   const minutes = parseInt(
-                    (document.getElementById("timeInput") as HTMLInputElement).value
+                    (document.getElementById("timeInput") as HTMLInputElement)
+                      .value
                   );
-                  if (!isNaN(minutes) && minutes > 0) {
+                  if (!isNaN(minutes)) {
                     onAddTime(minutes);
                     setAddTimeModalOpen(false);
                   } else {

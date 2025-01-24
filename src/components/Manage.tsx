@@ -9,6 +9,7 @@ interface Table {
 }
 
 const ManageTables: React.FC = () => {
+  const closingTime = moment().set({ hour: 22, minute: 0, second: 0 }); // เวลา 22:00 น.
   const [tables, setTables] = useState<Table[]>([]);
   const [newTableNum, setNewTableNum] = useState<number | null>(null);
   const [currentTime, setCurrentTime] = useState(moment());
@@ -22,7 +23,7 @@ const ManageTables: React.FC = () => {
     if (savedTables) {
       const parsedTables = JSON.parse(savedTables);
       setTables(
-        parsedTables.map((table: any) => ({
+        parsedTables.map((table: Table) => ({
           ...table,
           startTime: moment(table.startTime),
           endTime: moment(table.endTime),
@@ -64,11 +65,20 @@ const ManageTables: React.FC = () => {
 
   // เพิ่มเวลาให้โต๊ะ
   const handleAddTime = (tableNum: number, minutes: number) => {
-    const updatedTables = tables.map((table) =>
-      table.tableNum === tableNum
-        ? { ...table, endTime: moment(table.endTime).add(minutes, "minutes") }
-        : table
-    );
+    const updatedTables = tables.map((table) => {
+      if (table.tableNum === tableNum) {
+        const newEndTime = moment(table.endTime).add(minutes, "minutes");
+
+        // ตรวจสอบว่าเวลาปิดเตาใหม่เกิน 22:00 น. หรือไม่
+        if (newEndTime.isAfter(closingTime)) {
+          newEndTime.set({ hour: 22, minute: 0, second: 0 }); // ปรับเวลาปิดเตาเป็น 22:00 น.
+        }
+
+        return { ...table, endTime: newEndTime };
+      }
+      return table;
+    });
+
     setTables(updatedTables);
     localStorage.setItem("tables", JSON.stringify(updatedTables));
   };
@@ -93,7 +103,7 @@ const ManageTables: React.FC = () => {
 
       {/* ปุ่มเพิ่มโต๊ะ */}
       <button
-        className="btn btn-primary mb-6"
+        className="btn btn-blue mb-6"
         onClick={() => setAddTableModalOpen(true)}
       >
         เพิ่มโต๊ะ
@@ -106,7 +116,8 @@ const ManageTables: React.FC = () => {
       >
         ล้างทุกโต๊ะ
       </button>
-
+      {/* แสดงเวลาปัจจุบัน */}
+      <p className="text-lg mb-6">เวลาปัจจุบัน: {currentTime.format("HH:mm:ss")}</p>
       {/* แสดงข้อความผิดพลาด */}
       {errorMessage && (
         <div className="alert alert-error mb-6">
@@ -128,7 +139,7 @@ const ManageTables: React.FC = () => {
       )}
 
       {/* Grid Layout สำหรับการ์ด */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
         {tables.map((table) => (
           <TableCard2
             key={table.tableNum}
