@@ -1,7 +1,7 @@
 {
   "name": "time",
   "private": true,
-  "homepage": "https://PatiphanAk.github.io/manage_table/",
+  "homepage": "https://PatiphanAK.github.io/manage_table/",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -9,8 +9,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "predeploy": "bun run build",
+    "deploy": "bunx gh-pages -d dist"
   },
   "dependencies": {
     "gh-pages": "^6.3.0",
