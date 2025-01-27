@@ -99,7 +99,7 @@ const ManageTables: React.FC = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-6xl font-bold mb-6">Laohu Shabu</h1>
+      <h1 className="text-6xl font-bold mb-6">Table Management</h1>
 
       {/* ปุ่มเพิ่มโต๊ะ */}
       <button
